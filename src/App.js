@@ -7,6 +7,7 @@ import './firebase';
 import UserList from './components/UserList';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
+
 function App() {
   return (
     <Router>
@@ -15,6 +16,7 @@ function App() {
         <Route path="/registration" element={<Registration />} />
         <Route path="/about" element={<About />} />
         <Route path="/users" element={<UserList />} />
+
       </Routes>
     </Router>
   );

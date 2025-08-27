@@ -24,6 +24,9 @@ function Home() {
             <li className="nav-item mx-2">
               <Link to="/about" className="btn btn-secondary">About</Link>
             </li>
+            <li className="nav-item mx-2">
+              <Link to="/users" className="btn btn-secondary">User List</Link>
+            </li>
           </ul>
         </div>
       </nav>

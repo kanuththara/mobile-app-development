@@ -4,6 +4,8 @@ import Home from './components/Home';
 import Registration from './components/Registration';
 import About from './components/About';
 import './firebase'; 
+import UserList from './components/UserList';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App() {
   return (
@@ -12,6 +14,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/registration" element={<Registration />} />
         <Route path="/about" element={<About />} />
+        <Route path="/users" element={<UserList />} />
       </Routes>
     </Router>
   );

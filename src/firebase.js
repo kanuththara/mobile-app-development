@@ -1,7 +1,5 @@
-// Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-import { getFirestore, doc, deleteDoc, updateDoc } from "firebase/firestore";
-
+import { initializeApp } from 'firebase/app';
+import { getFirestore } from 'firebase/firestore';
 // Your Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyDKqlSwiWRWr_W0Aw86KRlvk6gX7unIb0Y",
@@ -13,13 +11,5 @@ const firebaseConfig = {
   measurementId: "G-ST4MFZYH3X"
 };
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
-
-// Get Firestore instance
-const db = getFirestore(app);
-
-console.log("firebase Connected:", app);
-
-// ✅ Export everything just once
-export { db, doc, deleteDoc, updateDoc };
+export const db = getFirestore(app);

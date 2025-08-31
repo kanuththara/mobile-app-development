@@ -14,7 +14,7 @@ import { Modal, Button } from 'react-bootstrap';
 function UserList() {
   const [users, setUsers] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [sortKey, setSortKey] = useState('');
+  const [sortKey, setSortKey] = useState('name');
   const [sortOrder, setSortOrder] = useState('asc');
 
   const [editingUser, setEditingUser] = useState(null);
@@ -27,15 +27,19 @@ function UserList() {
 
   useEffect(() => {
     const q = query(collection(db, 'users'), orderBy('name', 'asc'));
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const userData = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      setUsers(userData);
-    }, (error) => {
-      console.error('Error fetching users:', error);
-    });
+    const unsubscribe = onSnapshot(
+      q,
+      (snapshot) => {
+        const userData = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setUsers(userData);
+      },
+      (error) => {
+        console.error('Error fetching users:', error);
+      }
+    );
 
     return () => unsubscribe();
   }, []);
@@ -125,24 +129,32 @@ function UserList() {
 
   return (
     <div className="container mt-5">
-      <div className="card shadow p-4 bg-white rounded">
-        <h3 className="card-title mb-3">Registered Users</h3>
+      <div
+        className="card shadow p-4 bg-white rounded"
+        style={{ boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
+      >
+        <h3 className="card-title mb-4 text-primary">Registered Users</h3>
 
         {/* Search */}
         <input
           type="text"
           placeholder="Search by name"
-          className="form-control mb-3"
+          className="form-control mb-4"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
+          style={{ maxWidth: '350px' }}
         />
 
         {/* Edit Form */}
         {editingUser && (
-          <form onSubmit={handleUpdate} className="mb-4 border p-3 rounded bg-light">
-            <h5>Update User</h5>
+          <form
+            onSubmit={handleUpdate}
+            className="mb-4 border p-3 rounded bg-light"
+            style={{ boxShadow: 'inset 0 0 10px #ddd' }}
+          >
+            <h5 className="text-success mb-3">Update User</h5>
             <div className="row">
-              <div className="col-md-4 mb-2">
+              <div className="col-md-4 mb-3">
                 <input
                   type="text"
                   className="form-control"
@@ -152,7 +164,7 @@ function UserList() {
                   required
                 />
               </div>
-              <div className="col-md-4 mb-2">
+              <div className="col-md-4 mb-3">
                 <input
                   type="email"
                   className="form-control"
@@ -162,7 +174,7 @@ function UserList() {
                   required
                 />
               </div>
-              <div className="col-md-4 mb-2">
+              <div className="col-md-4 mb-3">
                 <input
                   type="text"
                   className="form-control"
@@ -175,25 +187,43 @@ function UserList() {
                 />
               </div>
             </div>
-            <button type="submit" className="btn btn-success hover-effect me-2">Update</button>
-            <button type="button" className="btn btn-secondary" onClick={() => setEditingUser(null)}>Cancel</button>
+            <button
+              type="submit"
+              className="btn btn-success hover-effect me-2"
+              style={{ transition: 'background-color 0.3s' }}
+            >
+              Update
+            </button>
+            <button
+              type="button"
+              className="btn btn-secondary"
+              onClick={() => setEditingUser(null)}
+            >
+              Cancel
+            </button>
           </form>
         )}
 
         {/* User Table */}
         <div className="table-responsive">
-          <table className="table table-bordered table-hover table-striped">
+          <table className="table table-bordered table-hover table-striped rounded">
             <thead>
               <tr>
-                <th onClick={() => sortBy('name')} style={{ cursor: 'pointer' }}>
-                  Name {sortKey === 'name' ? (sortOrder === 'asc' ? '▲' : '▼') : ''}
-                </th>
-                <th onClick={() => sortBy('email')} style={{ cursor: 'pointer' }}>
-                  Email {sortKey === 'email' ? (sortOrder === 'asc' ? '▲' : '▼') : ''}
-                </th>
-                <th onClick={() => sortBy('phone')} style={{ cursor: 'pointer' }}>
-                  Phone {sortKey === 'phone' ? (sortOrder === 'asc' ? '▲' : '▼') : ''}
-                </th>
+                {['name', 'email', 'phone'].map((key) => (
+                  <th
+                    key={key}
+                    onClick={() => sortBy(key)}
+                    style={{
+                      cursor: 'pointer',
+                      backgroundColor:
+                        sortKey === key ? '#d1e7dd' : 'transparent',
+                      userSelect: 'none',
+                    }}
+                  >
+                    {key.charAt(0).toUpperCase() + key.slice(1)}{' '}
+                    {sortKey === key ? (sortOrder === 'asc' ? '▲' : '▼') : ''}
+                  </th>
+                ))}
                 <th>Actions</th>
               </tr>
             </thead>
@@ -208,12 +238,14 @@ function UserList() {
                       <button
                         className="btn btn-danger btn-sm me-2 hover-effect"
                         onClick={() => handleDelete(user)}
+                        style={{ transition: 'background-color 0.3s' }}
                       >
                         Delete
                       </button>
                       <button
                         className="btn btn-primary btn-sm hover-effect"
                         onClick={() => handleEdit(user)}
+                        style={{ transition: 'background-color 0.3s' }}
                       >
                         Edit
                       </button>
@@ -222,7 +254,9 @@ function UserList() {
                 ))
               ) : (
                 <tr>
-                  <td colSpan={4} className="text-center">No users found.</td>
+                  <td colSpan={4} className="text-center">
+                    No users found.
+                  </td>
                 </tr>
               )}
             </tbody>
@@ -236,11 +270,16 @@ function UserList() {
           <Modal.Title>Confirm Delete</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          Are you sure you want to delete <strong>{userToDelete?.name}</strong>?
+          Are you sure you want to delete{' '}
+          <strong>{userToDelete?.name}</strong>?
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>Cancel</Button>
-          <Button variant="danger" onClick={confirmDelete}>Delete</Button>
+          <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
+            Cancel
+          </Button>
+          <Button variant="danger" onClick={confirmDelete}>
+            Delete
+          </Button>
         </Modal.Footer>
       </Modal>
     </div>
